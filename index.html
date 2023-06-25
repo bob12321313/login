@@ -21,13 +21,13 @@
       })
       .then(response => {
         if (response.ok) {
-          console.log('User registered successfully');
+          alert('User registered successfully');
         } else {
-          console.error('Error registering user');
+          alert('Error registering user');
         }
       })
       .catch(error => {
-        console.error('Error registering user:', error);
+        alert('Error registering user:', error);
       });
     }
 
