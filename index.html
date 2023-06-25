@@ -2,92 +2,13 @@
 <html>
 <head>
   <title>User Registration and Login</title>
-  <script>
-    function registerUser() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      const requestData = {
-        username: username,
-        password: password
-      };
-
-      fetch('https://your-backend-api.com/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('User registered successfully');
-        } else {
-          console.error('Error registering user');
-        }
-      })
-      .catch(error => {
-        console.error('Error registering user:', error);
-      });
-    }
-
-    function loginUser() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      const requestData = {
-        username: username,
-        password: password
-      };
-
-      fetch('https://your-backend-api.com/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('User logged in successfully');
-
-          // Retrieve required data after login
-          fetch('https://your-backend-api.com/data', {
-            method: 'GET',
-            headers: {
-              'Authorization': 'Bearer YOUR_TOKEN' // Add authorization token if required
-            }
-          })
-          .then(dataResponse => {
-            if (dataResponse.ok) {
-              // Process the retrieved data here
-              return dataResponse.json();
-            } else {
-              throw new Error('Error retrieving data');
-            }
-          })
-          .then(data => {
-            console.log('Data retrieved successfully:', data);
-          })
-          .catch(error => {
-            console.error('Error retrieving data:', error);
-          });
-        } else {
-          console.error('Error logging in');
-        }
-      })
-      .catch(error => {
-        console.error('Error logging in:', error);
-      });
-    }
-  </script>
 </head>
 <body>
   <h1>User Registration</h1>
   <form>
     <input type="text" id="username" placeholder="Username" /><br>
     <input type="password" id="password" placeholder="Password" /><br>
-    <button type="button" onclick="registerUser()">Register</button>
+    <button type="submit">Register</button>
   </form>
 
   <h1>User Login</h1>
