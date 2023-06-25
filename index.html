@@ -6,7 +6,15 @@
     function changePage() {
       window.location.href = 'test.html';
     }
-    
+
+
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      alert(fd);
+    })
   </script>
 </head>
 <body>
@@ -15,13 +23,7 @@
     <input type="text" id="username" placeholder="Username" /><br>
     <input type="password" id="password" placeholder="Password" /><br>
     <button type="submit">Register</button>
-  </form>
-
-  <h1>User Login</h1>
-  <form>
-    <input type="text" id="username" placeholder="Username" /><br>
-    <input type="password" id="password" placeholder="Password" /><br>
-    <button type="button" onclick="changePage()">Login</button>
+    <button type="button" onclick="changePage()">change page</button>
   </form>
 </body>
 </html>
