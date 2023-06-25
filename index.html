@@ -3,61 +3,39 @@
 <head>
   <title>User Registration and Login</title>
   <script>
-    function registerUser() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+    const express = require('express');
+const app = express();
 
-      const requestData = {
-        username: username,
-        password: password
-      };
+// In-memory storage for registered users (replace this with a proper database)
+const users = [];
 
-      fetch('/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      })
-      .then(response => {
-        if (response.ok) {
-          alert('User registered successfully');
-        } else {
-          alert('Error registering user');
-        }
-      })
-      .catch(error => {
-        alert('Error registering user:', error);
-      });
-    }
+// Parse JSON request bodies
+app.use(express.json());
 
-    function loginUser() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+// Registration route
+app.post('/register', (req, res) => {
+  const { username, password } = req.body;
 
-      const requestData = {
-        username: username,
-        password: password
-      };
+  // Check if the username already exists
+  if (users.find(user => user.username === username)) {
+    return res.status(409).json({ message: 'Username already exists' });
+  }
 
-      fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      })
-      .then(response => {
-        if (response.ok) {
-          alert('success');
-        } else {
-          alert('login unsuccessful');
-        }
-      })
-      .catch(error => {
-        alert('Error logging in:', error);
-      });
-    }
+  // Store the user securely (e.g., hash the password)
+  // Replace this with proper password hashing and storage mechanism
+  const newUser = {
+    username: username,
+    password: password // Replace this with password hashing and storage
+  };
+  users.push(newUser);
+
+  res.status(200).json({ message: 'User registered successfully' });
+});
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
   </script>
 </head>
 <body>
