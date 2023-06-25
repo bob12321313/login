@@ -8,21 +8,120 @@
     }
 
 
-    const form = document.querySelector('form');
+    const fs = require('fs');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const fd = new FormData(form);
-      alert(fd);
-    })
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Endpoint for the registration form
+app.get('/register', (req, res) => {
+  res.send(`
+    <h1>Registration Form</h1>
+    <form method="POST" action="/register">
+      <input type="text" name="username" placeholder="Username" required><br>
+      <input type="password" name="password" placeholder="Password" required><br>
+      <button type="submit">Register</button>
+    </form>
+  `);
+});
+
+// Endpoint for handling the registration form submission
+app.post('/register', (req, res) => {
+  const { username, password } = req.body;
+
+  // Read the existing data file
+  fs.readFile('datafile.json', (err, data) => {
+    if (err) {
+      // Handle error if the file cannot be read
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    const users = JSON.parse(data);
+    
+    // Check if the username already exists
+    if (users.hasOwnProperty(username)) {
+      res.send('Username already exists. Please choose a different username.');
+      return;
+    }
+
+    // Add the new user to the existing users object
+    users[username] = password;
+
+    // Write the updated users object back to the data file
+    fs.writeFile('datafile.json', JSON.stringify(users), (err) => {
+      if (err) {
+        // Handle error if the file cannot be written
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      res.send('Registration successful!');
+    });
+  });
+});
+
+// Endpoint for the login form
+app.get('/login', (req, res) => {
+  res.send(`
+    <h1>Login Form</h1>
+    <form method="POST" action="/login">
+      <input type="text" name="username" placeholder="Username" required><br>
+      <input type="password" name="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
+  `);
+});
+
+// Endpoint for handling the login form submission
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Read the data file
+  fs.readFile('datafile.json', (err, data) => {
+    if (err) {
+      // Handle error if the file cannot be read
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    const users = JSON.parse(data);
+
+    // Check if the username exists and the password matches
+    if (users.hasOwnProperty(username) && users[username] === password) {
+      res.send('Login successful!');
+    } else {
+      res.send('Invalid username or password.');
+    }
+  });
+});
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+
   </script>
 </head>
 <body>
-  <h1>User Registration</h1>
+  <h1>Registration Form</h1>
+    <form method="POST" action="/register">
+      <input type="text" name="username" placeholder="Username" required><br>
+      <input type="password" name="password" placeholder="Password" required><br>
+      <button type="submit">Register</button>
+    </form>
+   <h1>Login Form</h1>
+    <form method="POST" action="/login">
+      <input type="text" name="username" placeholder="Username" required><br>
+      <input type="password" name="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
   <form>
-    <input type="text" id="username" placeholder="Username" /><br>
-    <input type="password" id="password" placeholder="Password" /><br>
-    <button type="submit">Register</button>
     <button type="button" onclick="changePage()">change page</button>
   </form>
 </body>
