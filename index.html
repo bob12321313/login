@@ -3,39 +3,80 @@
 <head>
   <title>User Registration and Login</title>
   <script>
-    const express = require('express');
-const app = express();
+    function registerUser() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-// In-memory storage for registered users (replace this with a proper database)
-const users = [];
+      const requestData = {
+        username: username,
+        password: password
+      };
 
-// Parse JSON request bodies
-app.use(express.json());
+      fetch('https://your-backend-api.com/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('User registered successfully');
+        } else {
+          console.error('Error registering user');
+        }
+      })
+      .catch(error => {
+        console.error('Error registering user:', error);
+      });
+    }
 
-// Registration route
-app.post('/register', (req, res) => {
-  const { username, password } = req.body;
+    function loginUser() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-  // Check if the username already exists
-  if (users.find(user => user.username === username)) {
-    return res.status(409).json({ message: 'Username already exists' });
-  }
+      const requestData = {
+        username: username,
+        password: password
+      };
 
-  // Store the user securely (e.g., hash the password)
-  // Replace this with proper password hashing and storage mechanism
-  const newUser = {
-    username: username,
-    password: password // Replace this with password hashing and storage
-  };
-  users.push(newUser);
+      fetch('https://your-backend-api.com/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('User logged in successfully');
 
-  res.status(200).json({ message: 'User registered successfully' });
-});
-
-// Start the server
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+          // Retrieve required data after login
+          fetch('https://your-backend-api.com/data', {
+            method: 'GET',
+            headers: {
+              'Authorization': 'Bearer YOUR_TOKEN' // Add authorization token if required
+            }
+          })
+          .then(dataResponse => {
+            if (dataResponse.ok) {
+              // Process the retrieved data here
+              console.log('Data retrieved successfully');
+            } else {
+              console.error('Error retrieving data');
+            }
+          })
+          .catch(error => {
+            console.error('Error retrieving data:', error);
+          });
+        } else {
+          console.error('Error logging in');
+        }
+      })
+      .catch(error => {
+        console.error('Error logging in:', error);
+      });
+    }
   </script>
 </head>
 <body>
@@ -47,10 +88,3 @@ app.listen(3000, () => {
   </form>
 
   <h1>User Login</h1>
-  <form>
-    <input type="text" id="username" placeholder="Username" /><br>
-    <input type="password" id="password" placeholder="Password" /><br>
-    <button type="button" onclick="loginUser()">Login</button>
-  </form>
-</body>
-</html>
